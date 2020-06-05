@@ -79,7 +79,8 @@ export class MainComponent extends React.Component {
             .then(e => e.json().then(data => {
                 console.log(data);
                 this.plot(data, this.state.end - this.state.start)
-            }));
+            }))
+            .catch(console.error);
         const createQueryParamFromString = str => {
             while (str.includes(' ')) {
                 str = str.replace(' ', '%20');
@@ -94,7 +95,8 @@ export class MainComponent extends React.Component {
                     img: <img src={this.state.plotSrc}
                               alt="Тут будет график!"/>
                 });
-            }));
+            }))
+            .catch(console.error);
     }
 
     plot(data, range) {
