@@ -6,7 +6,9 @@ export class MainComponent extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { expr: '', start: 0, end: 0 };
+        this.appId = 'L8JTY4-LKKVY6LLG8';
+        this.state = { expr: '', start: 0, end: 0, plotSrc: '', img: '' };
+        this.proxyurl = "https://cors-anywhere.herokuapp.com/";
         this.setExpr = this.setExpr.bind(this);
         this.setStart = this.setStart.bind(this);
         this.setEnd = this.setEnd.bind(this);
@@ -34,7 +36,6 @@ export class MainComponent extends React.Component {
                     <br/>
                     <input value={this.state.expr}
                            onChange={this.setExpr}/>
-                    {this.state.expr}
                 </div>
                 <div className={'block'}>
                     Range
@@ -59,6 +60,7 @@ export class MainComponent extends React.Component {
                 </div>
             </div>
             <canvas id={'plot'}/>
+            {this.state.img}
         </div>
     }
 
@@ -77,6 +79,21 @@ export class MainComponent extends React.Component {
             .then(e => e.json().then(data => {
                 console.log(data);
                 this.plot(data, this.state.end - this.state.start)
+            }));
+        const createQueryParamFromString = str => {
+            while (str.includes(' ')) {
+                str = str.replace(' ', '%20');
+            }
+            return str;
+        };
+        fetch(`${this.proxyurl}http://api.wolframalpha.com/v2/query?appid=${this.appId}
+        &input=${createQueryParamFromString('plot ' + this.state.expr + 'from x=' + this.state.start + ' to ' + this.state.end)}&output=json`)
+            .then(e => e.json().then(res => {
+                this.setState({ plotSrc: res.queryresult.pods.find(e => e.id === 'Plot').subpods[0].img.src });
+                this.setState({
+                    img: <img src={this.state.plotSrc}
+                              alt="Тут будет график!"/>
+                });
             }));
     }
 
