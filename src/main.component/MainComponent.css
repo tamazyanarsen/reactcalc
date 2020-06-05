@@ -1,7 +1,7 @@
-.main-div {
-    display: flex;
-}
-
 .block {
     margin: 1%;
+}
+
+.flex{
+    display: flex;
 }
